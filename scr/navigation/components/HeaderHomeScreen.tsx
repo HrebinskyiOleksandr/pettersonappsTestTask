@@ -13,7 +13,7 @@ import { IconButton, Text } from 'react-native-paper';
 
 export const HeaderHomeScreen: React.FC = () => {
   const navigation: any = useNavigation();
-
+// написав як це малоби вишлядати але не викорситовував це вже реалізовано для сторінки AddTaskScreen.tsx
   return (
     <View style={styles.container}>
       <ImageBackground

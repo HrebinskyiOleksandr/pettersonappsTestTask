@@ -26,7 +26,7 @@ export const HomeScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.contentStyle}>
       <Text style={styles.title}>My Todo List</Text>
-
+      {/*В даному випадко можна юзати і FlatList і ScrollView бо список не виликий*/}
       <Text style={styles.sectionTitle}>Active</Text>
       <FlatList
         data={activeTasks}
