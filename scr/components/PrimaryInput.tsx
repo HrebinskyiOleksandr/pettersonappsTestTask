@@ -11,6 +11,8 @@ interface PrimaryInputProps {
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
   editable?: boolean;
   style?: ViewStyle;
+  error?: boolean;
+  errorMessage?: string;
 }
 
 export const PrimaryInput: React.FC<PrimaryInputProps> = ({
@@ -21,6 +23,8 @@ export const PrimaryInput: React.FC<PrimaryInputProps> = ({
   multiline,
   keyboardType = 'default',
   editable = true,
+  error = false,
+  errorMessage = '',
 }) => {
   return (
     <View style={styles.container}>
@@ -33,7 +37,9 @@ export const PrimaryInput: React.FC<PrimaryInputProps> = ({
         keyboardType={keyboardType}
         editable={editable}
         style={[styles.input, style]}
+        error={error}
       />
+      {error && errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
     </View>
   );
 };
@@ -52,5 +58,10 @@ const styles = StyleSheet.create({
     height: 55,
     fontSize: 16,
     borderRadius: 6,
+  },
+  errorText: {
+    fontSize: 12,
+    color: 'red',
+    marginTop: 4,
   },
 });

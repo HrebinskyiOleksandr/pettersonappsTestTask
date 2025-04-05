@@ -17,12 +17,23 @@ import { MaskInputField } from '../components/MaskInputField';
 export const AddTaskScreen: React.FC = () => {
   const dispatch = useDispatch();
   const navigation: any = useNavigation();
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { control, handleSubmit, setValue, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors, isValid }
+  } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(addTaskSchema),
+    defaultValues: {
+      title: '',
+      date: '',
+      time: '',
+      notes: '',
+      category: '',
+    },
   });
 
   const onSubmit = (data: any) => {
@@ -34,6 +45,7 @@ export const AddTaskScreen: React.FC = () => {
     dispatch(addTask(newTask));
     navigation.navigate(RouteKey.HomeScreen);
   };
+
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'file-document':
@@ -43,9 +55,10 @@ export const AddTaskScreen: React.FC = () => {
       case 'trophy':
         return colors.categoryChalenge;
       default:
-        return 'lightgray'; // стандартний колір для не вибраної категорії
+        return 'lightgray';
     }
   };
+
   return (
     <PrimaryWrapper>
       <View style={styles.header}>
@@ -66,36 +79,35 @@ export const AddTaskScreen: React.FC = () => {
           />
         )}
       />
+
       <View style={styles.categoryContainer}>
         <Text style={styles.label}>Category</Text>
         <View style={styles.categorys}>
-      {['file-document', 'calendar', 'trophy'].map((cat) => (
-        <Controller
-          key={cat}
-          control={control}
-          name="category"
-          render={({ field: { onChange, value } }) => (
-            <IconButton
-              icon={cat}
-              size={18}
+          {['file-document', 'calendar', 'trophy'].map((cat) => (
+            <TouchableOpacity
+              key={cat}
               onPress={() => {
                 setSelectedCategory(cat);
-                onChange(cat);
+                setValue('category', cat, { shouldValidate: true });
               }}
-              style={[
-                styles.categoryIcon,
-                value === cat && { borderColor: colors.main, borderWidth: 2 },
-                { backgroundColor: getCategoryColor(cat) },
-              ]}
-              iconColor={'rgba(0, 0, 0, 0.21)'}
-              mode="contained"  
-              rippleColor="transparent"  
-            />
-          )}
-        />
-      ))}
-    </View>
+            >
+              <IconButton
+                icon={cat}
+                size={18}
+                style={[
+                  styles.categoryIcon,
+                  selectedCategory === cat && { borderColor: colors.main, borderWidth: 2 },
+                  { backgroundColor: getCategoryColor(cat) },
+                ]}
+                iconColor={'rgba(0, 0, 0, 0.21)'}
+                mode="contained"
+                rippleColor="transparent"
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
+        {errors.category && <Text style={styles.errorText}>{errors.category.message}</Text>}
 
       <View style={styles.row}>
         <View style={styles.column}>
@@ -106,9 +118,9 @@ export const AddTaskScreen: React.FC = () => {
               <MaskInputField
                 label="Date"
                 value={value}
-                onChangeText={(text) => setValue('date', text)}
-                mask={[/\d/, /\d/, '.', /\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/]}  // Маска для дати
-                icon="calendar"  // Іконка для кнопки (наприклад, календар)
+                onChangeText={(text) => setValue('date', text, { shouldValidate: true })}
+                mask={[/\d/, /\d/, '.', /\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/]}
+                icon="calendar"
                 error={!!errors.date}
                 errorMessage={errors.date?.message}
               />
@@ -120,15 +132,15 @@ export const AddTaskScreen: React.FC = () => {
             control={control}
             name="time"
             render={({ field: { value } }) => (
-            <MaskInputField
-              label="Time"
-              value={value}
-              onChangeText={(text) => setValue('time', text)}
-              mask={[/\d/, /\d/, ':', /\d/, /\d/]}  // Маска для часу
-              icon="clock"  // Іконка для кнопки (наприклад, годинник)
-              error={!!errors.time}
-              errorMessage={errors.time?.message}
-            />
+              <MaskInputField
+                label="Time"
+                value={value}
+                onChangeText={(text) => setValue('time', text, { shouldValidate: true })}
+                mask={[/\d/, /\d/, ':', /\d/, /\d/]}
+                icon="clock"
+                error={!!errors.time}
+                errorMessage={errors.time?.message}
+              />
             )}
           />
         </View>
@@ -143,12 +155,20 @@ export const AddTaskScreen: React.FC = () => {
             value={value}
             onChangeText={onChange}
             multiline
-            style={{height: 130}}
+            style={{ height: 130 }}
+            error={!!errors.notes}
+            errorMessage={errors.notes?.message}
           />
         )}
       />
 
-      <PrimaryButton label="Save" onPress={handleSubmit(onSubmit)} height={56} style={styles.primaryButton}/>
+      <PrimaryButton
+        label="Save"
+        onPress={handleSubmit(onSubmit)}
+        height={56}
+        style={styles.primaryButton}
+        disabled={!isValid}
+      />
     </PrimaryWrapper>
   );
 };
@@ -159,11 +179,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   categoryIcon: {
-    width: 50,  
-    height: 50, 
+    width: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 25,  
+    borderRadius: 25,
     margin: 5,
     borderColor: colors.white,
     borderWidth: 2,
@@ -203,5 +223,11 @@ const styles = StyleSheet.create({
   primaryButton: {
     position: 'absolute',
     bottom: 15,
+  },
+  errorText: {
+    color: 'red',
+    marginLeft: 20,
+    marginBottom: 10,
+    fontSize: 12,
   },
 });

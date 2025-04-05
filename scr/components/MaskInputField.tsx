@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet} from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import { colors } from '../core/typing/enums/colors';
 import MaskInput from 'react-native-mask-input';
@@ -8,10 +8,12 @@ interface MaskInputFieldProps {
   label: string;
   value: string;
   onChangeText: (text: string) => void;
-  mask: any[]; 
-  icon: string; 
+  mask: any[];
+  icon: string;
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
   editable?: boolean;
+  error?: boolean;
+  errorMessage?: string;
 }
 
 export const MaskInputField: React.FC<MaskInputFieldProps> = ({
@@ -22,18 +24,24 @@ export const MaskInputField: React.FC<MaskInputFieldProps> = ({
   icon,
   keyboardType = 'default',
   editable = true,
+  error = false,
+  errorMessage = '',
 }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, error && styles.errorBorder]}>
         <MaskInput
           value={value}
           onChangeText={onChangeText}
           mask={mask}
           keyboardType={keyboardType}
           editable={editable}
-          style={[styles.input, styles.maskedInput]}
+          style={[
+            styles.input,
+            styles.maskedInput,
+            error && styles.inputError,
+          ]}
         />
         <IconButton
           icon={icon}
@@ -42,6 +50,9 @@ export const MaskInputField: React.FC<MaskInputFieldProps> = ({
           style={styles.icon}
         />
       </View>
+      {error && errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
     </View>
   );
 };
@@ -58,23 +69,31 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: 6,
+    backgroundColor: colors.white,
   },
   input: {
-    backgroundColor: colors.white,
     height: 55,
     fontSize: 16,
-    borderRadius: 6,
     flex: 1,
   },
   maskedInput: {
-    borderRadius: 6,
     paddingHorizontal: 16,
-
   },
   icon: {
-    marginLeft: 8,
-    tintColor: colors.main,
     position: 'absolute',
     right: 0,
+  },
+  errorText: {
+    fontSize: 12,
+    color: 'red',
+    marginTop: 4,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  errorBorder: {
+    borderWidth: 1,
+    borderColor: 'red',
   },
 });

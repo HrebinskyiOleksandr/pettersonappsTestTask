@@ -5,12 +5,17 @@ export const addTaskSchema = yup.object().shape({
   date: yup
     .string()
     .matches(
-      /^(0[1-9]|1[0-9]|2[0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/,
+      /^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/,
       "Invalid date format. Use dd.mm.yyyy"
     )
     .required("Date is required"),
   time: yup
     .string()
-    .matches(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/, "Invalid time format. Use hh:mm")
+    .matches(
+      /^(0\d|1\d|2[0-3]):([0-5]\d)$/,
+      "Invalid time format. Use hh:mm"
+    )
     .required("Time is required"),
+  notes: yup.string().required("Notes are required"),
+  category: yup.string().required("Category is required"),
 });
