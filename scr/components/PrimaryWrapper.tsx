@@ -26,7 +26,7 @@ export const PrimaryWrapper = ({ children, wrapperStyle, contentStyle,}: Primery
 };
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg_main,
     flex: 1,
   },
   content: {
