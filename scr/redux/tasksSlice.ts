@@ -3,8 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Task {
   id: string;
   title: string;
-  completed: boolean;
   category: string;
+  date?: string;
+  time?: string;
+  notes?: string;
+  completed: boolean;
 }
 
 interface TasksState {
@@ -21,6 +24,7 @@ const tasksSlice = createSlice({
   reducers: {
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks.push(action.payload);
+      console.log('Adding task:', action.payload);
     },
     removeTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter(task => task.id !== action.payload);
