@@ -60,12 +60,7 @@ export const AddTaskScreen: React.FC = () => {
   };
 
   return (
-    <PrimaryWrapper>
-      <View style={styles.header}>
-        <IconButton icon="close" size={24} onPress={() => navigation.goBack()} />
-        <Text style={styles.headerTitle}>Add New Task</Text>
-      </View>
-
+    <PrimaryWrapper contentStyle={styles.contentStyle}>
       <Controller
         control={control}
         name="title"
@@ -75,7 +70,6 @@ export const AddTaskScreen: React.FC = () => {
             value={value}
             onChangeText={onChange}
             error={!!errors.title}
-            errorMessage={errors.title?.message}
           />
         )}
       />
@@ -107,7 +101,7 @@ export const AddTaskScreen: React.FC = () => {
           ))}
         </View>
       </View>
-        {errors.category && <Text style={styles.errorText}>{errors.category.message}</Text>}
+      {errors.category && <Text style={styles.errorText}>{errors.category.message}</Text>}
 
       <View style={styles.row}>
         <View style={styles.column}>
@@ -122,7 +116,6 @@ export const AddTaskScreen: React.FC = () => {
                 mask={[/\d/, /\d/, '.', /\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/]}
                 icon="calendar"
                 error={!!errors.date}
-                errorMessage={errors.date?.message}
               />
             )}
           />
@@ -139,7 +132,6 @@ export const AddTaskScreen: React.FC = () => {
                 mask={[/\d/, /\d/, ':', /\d/, /\d/]}
                 icon="clock"
                 error={!!errors.time}
-                errorMessage={errors.time?.message}
               />
             )}
           />
@@ -157,7 +149,6 @@ export const AddTaskScreen: React.FC = () => {
             multiline
             style={{ height: 130 }}
             error={!!errors.notes}
-            errorMessage={errors.notes?.message}
           />
         )}
       />
@@ -167,13 +158,16 @@ export const AddTaskScreen: React.FC = () => {
         onPress={handleSubmit(onSubmit)}
         height={56}
         style={styles.primaryButton}
-        disabled={!isValid}
+        isDesable={!isValid}
       />
     </PrimaryWrapper>
   );
 };
 
 const styles = StyleSheet.create({
+  contentStyle: {
+    marginTop: 65,
+  },
   categorys: {
     flexDirection: 'row',
     marginHorizontal: 20,
@@ -188,17 +182,6 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
     borderWidth: 2,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'center',
-  },
   label: {
     fontSize: 14,
     color: colors.black,
@@ -207,7 +190,6 @@ const styles = StyleSheet.create({
   categoryContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
   },
   selectedCategory: {
     backgroundColor: 'lightgray',
@@ -215,10 +197,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 15,
   },
   column: {
     flex: 1,
-    marginRight: 10,
   },
   primaryButton: {
     position: 'absolute',
@@ -226,7 +208,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    marginLeft: 20,
     marginBottom: 10,
     fontSize: 12,
   },

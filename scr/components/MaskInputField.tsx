@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet} from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import { colors } from '../core/typing/enums/colors';
@@ -27,21 +27,32 @@ export const MaskInputField: React.FC<MaskInputFieldProps> = ({
   error = false,
   errorMessage = '',
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const getBorderColor = () => {
+    if (error) return 'red';
+    if (isFocused) return colors.main;
+    return '#70707c';
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.inputContainer, error && styles.errorBorder]}>
+      <View
+        style={[
+          styles.inputContainer,
+          { borderColor: getBorderColor(), borderWidth: 1 },
+        ]}
+      >
         <MaskInput
           value={value}
           onChangeText={onChangeText}
           mask={mask}
           keyboardType={keyboardType}
           editable={editable}
-          style={[
-            styles.input,
-            styles.maskedInput,
-            error && styles.inputError,
-          ]}
+          style={styles.input}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
         <IconButton
           icon={icon}
@@ -71,13 +82,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 6,
     backgroundColor: colors.white,
+    width: '90%',
   },
   input: {
     height: 55,
     fontSize: 16,
     flex: 1,
-  },
-  maskedInput: {
     paddingHorizontal: 16,
   },
   icon: {
@@ -88,12 +98,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'red',
     marginTop: 4,
-  },
-  inputError: {
-    borderColor: 'red',
-  },
-  errorBorder: {
-    borderWidth: 1,
-    borderColor: 'red',
   },
 });
